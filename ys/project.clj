@@ -1,4 +1,4 @@
-(defproject yamlscript.cli "0.1.0-SNAPSHOT"
+(defproject yamlscript/cli "0.1.0"
   :description "YAMLScript Command Line Tool"
 
   :url "https://github.com/yaml/yamlscript"
@@ -27,7 +27,7 @@
 
   :plugins
   [[lein-exec "0.3.7"]
-   [io.github.borkdude/lein-lein2deps "0.1.0"]]
+   #_[io.github.borkdude/lein-lein2deps "0.1.0"]]
 
   :prep-tasks [["compile"] ["javac"]]
 

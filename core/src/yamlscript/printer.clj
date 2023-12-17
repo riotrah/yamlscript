@@ -7,11 +7,8 @@
 (ns yamlscript.printer
   (:use yamlscript.debug)
   (:require
-   [clojure.edn :as edn]
    [clojure.string :as str]
-   [clojure.pprint :as pp]
-   [yamlscript.builder :as builder]
-   [clj-yaml.core :as yaml])
+   [zprint.core :as zp])
   (:refer-clojure :exclude [print]))
 
 (def string-escape
@@ -51,6 +48,7 @@
       :Chr (str "\\" val)
       :Spc (str/replace val #"::" ".")
       :Sym (str val)
+      :Tok (str val)
       :Key (str val)
       :Int (str val)
       :Flt (str val)
@@ -60,10 +58,11 @@
               (Exception. (str "Unknown AST node type:"
                             node))))))
 
-(defn pretty-format [s]
-  (str
-    (with-out-str (pp/write s))
-    "\n"))
+(defn pretty-format [code]
+  (zp/zprint-str
+    code
+    {:style :community
+     :parse-string-all? true}))
 
 (defn print
   "Render a YAMLScript AST as Clojure code."
@@ -72,11 +71,7 @@
         code (->> list
                (map print-node)
                (str/join "\n")
-               (#(str "(do " % "\n)\n"))
-               edn/read-string
-               rest
-               (map pretty-format)
-               (str/join ""))]
+               pretty-format)]
     code))
 
 (comment

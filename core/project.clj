@@ -20,6 +20,7 @@
   [[org.clojure/clojure "1.11.1"]
    [org.clojure/data.json "2.4.0"]
    [clj-commons/clj-yaml "1.0.27"]
+   [zprint "1.2.8"]
    [org.snakeyaml/snakeyaml-engine "2.7"]
    [org.babashka/sci "0.8.41"]]
 

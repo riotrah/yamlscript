@@ -1,20 +1,32 @@
-SHELL := bash
+include ../common/base.mk
 
 COFFEE := $(shell find src -type f -name '*.coffee')
 JS := $(COFFEE:%.coffee=%.js)
 JS := $(JS:src/%=lib/%)
 
-default:
+NODE_MODULES := ../node_modules
 
-build: $(JS)
+export PATH := $(NODE_MODULES)/.bin:$(PATH)
 
-lib/%.js: src/%.coffee
+
+#------------------------------------------------------------------------------
+build:: $(JS)
+
+lib/%.js: src/%.coffee ../node_modules
 	@mkdir -p $(dir $@)
 	coffee -c -p $< > $@
 
 publish: build
 	npm $@
 
-clean:
+clean::
 	$(RM) package*
-	$(RM) -r node_modules
+
+realclean:: clean
+	$(RM) -r $(NODE_MODULES)
+
+$(NODE_MODULES):
+ifeq (,$(shell command -v npm))
+	$(error *** 'npm' is required but not installed)
+endif
+	npm install --prefix=.. coffeescript

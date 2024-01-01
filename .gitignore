@@ -10,6 +10,8 @@ Dockerfile
 note/
 .nrepl-port
 .nrepl-pid
+package.json
+package-lock.json
 pom.xml
 pom.xml.asc
 .portal/
@@ -25,5 +27,6 @@ target/
 /*.ys
 /issue-*
 /libyamlscript-*
+/node_modules/
 /www
 /ys-*

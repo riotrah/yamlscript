@@ -101,19 +101,21 @@ bump:
 $(CLEAN):
 clean: $(CLEAN) release-clean
 	$(RM) -r sample/advent/hearsay-rust/target/
+	$(RM) package.*
 clean-%: %
 	$(MAKE) -C $< clean
 
 $(REALCLEAN):
 realclean: clean $(REALCLEAN)
+	$(RM) -r node_modules
 realclean-%: %
 	$(MAKE) -C $< realclean
 
 $(DISTCLEAN):
 distclean: realclean $(DISTCLEAN)
+	$(RM) -r .calva/ .clj-kondo/ .lsp/
 distclean-%: %
 	$(MAKE) -C $< distclean
-	$(RM) -r .calva/ .clj-kondo/ .lsp/
 
 sysclean: realclean
 	$(RM) -r ~/.m2/ /tmp/graalvm* /tmp/yamlscript/

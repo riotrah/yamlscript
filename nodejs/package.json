@@ -1,0 +1,22 @@
+{
+  "name": "@yaml/yamlscript",
+  "version": "0.1.1",
+  "description": "Program in YAML",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yaml/yamlscript.git"
+  },
+  "author": "Ingy döt Net",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yaml/yamlscript/issues"
+  },
+  "homepage": "https://github.com/yaml/yamlscript#readme"
+}

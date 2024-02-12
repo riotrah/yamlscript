@@ -20,11 +20,6 @@
 ;; * !vstr  - YAMLScript interpolated string
 ;;
 ;; * !empty - YAML empty stream
-;;
-;; The resolver transforms the keys of the YAMLScript special forms:
-;;
-;; * def  - 'foo =' -> !exp 'def foo'
-;; * defn - 'defn foo(...)' -> !exp 'defn foo [...]'
 
 (ns yamlscript.resolver
   (:require
@@ -77,7 +72,7 @@
 
 (defn tag-def [[{key :exp} val]]
   (when (re-matches re/defk key)
-    [{:def key} val]))
+    [{:let key} val]))
 
 (defn tag-defn [[{key :exp} val]]
   (when (re-matches re/dfnk key)

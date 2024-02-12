@@ -104,8 +104,8 @@
         (when exp
           (optimize-ys-expression exp))))))
 
-(defn build-def [{node :def}]
-  [(Sym "def")
+(defn build-let [{node :let}]
+  [(Sym "let")
    (Sym (str/replace node #"\ +=$" ""))])
 
 (defn build-map [node]
@@ -179,7 +179,7 @@
       :exp (build-exp node)
       :vstr (build-vstr node)
       :str (Str (:str node))
-      :def (build-def node)
+      :let (build-let node)
       :map (build-map node)
       :seq (build-vec node)
       :int (Int (:int node))

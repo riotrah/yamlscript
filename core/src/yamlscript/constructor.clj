@@ -42,9 +42,7 @@
                                    (construct-node n c)))
         node (loop [pairs pairs, new []]
                (if (seq pairs)
-                 (let [pairs (if (> (:lvl ctx) 1)
-                               (check-let-bindings pairs ctx)
-                               pairs)
+                 (let [pairs (check-let-bindings pairs ctx)
                        [[lhs rhs] & pairs] pairs
                        lhs (construct-side lhs ctx)
                        rhs (construct-side rhs ctx)
@@ -88,7 +86,7 @@
         [(Vec (->>
                 lets
                 flatten
-                (filter #(not= {:Sym 'def} %1))
+                (filter #(not= {:Sym 'let} %1))
                 ;; Handle RHS is mapping
                 (partition 2)
                 (map #(let [[k v] %1]
@@ -101,13 +99,11 @@
                 vec))]
         (construct-pairs {:pairs (mapcat identity rest)} ctx)))]])
 
-(mapcat identity [{:Sym 'b} {:Lst [{:Sym 'c} {:Sym 'd}]}])
-
 (defn check-let-bindings [pairs ctx]
   (let [[lets rest]
         (map vec
           (split-with
-            #(= 'def (get-in %1 [0 0 :Sym]))
+            #(= 'let (get-in %1 [0 0 :Sym]))
             pairs))]
     (if (seq lets)
       (apply-let-bindings lets rest ctx)
@@ -164,16 +160,6 @@
 
 (comment
   www
-  (construct
-    {:pairs
-     ([{:Sym 'defn} {:Sym 'foo} {:Vec [{:Sym 'x}]}]
-      {:pairs
-       '([{:Sym 'def} {:Sym 'y}]
-         {:Lst ({:Sym 'add} {:Sym 'x} {:Int 1})}
-         [{:Sym 'def} {:Sym 'x}]
-         {:Lst [{:Sym 'times} {:Sym 'y} {:Sym 'x}]}
-         {:Sym '=>}
-         {:Sym 'y})})})
   (construct :Nil)
   (construct {:do [{:Sym 'a} [{:Sym 'b} {:Sym 'c}]]})
   )

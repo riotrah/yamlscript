@@ -166,7 +166,7 @@
     - 3
   resolve: |
     {:pairs
-     [{:def "list ="}
+     [{:let "list ="}
       {:seq [{:int "1"} {:int "2"} {:int "3"}]}]}
 
 
@@ -179,5 +179,5 @@
     - 3
   resolve: |
     {:pairs
-     [{:def "list ="}
+     [{:let "list ="}
       {:seq [{:int "1"} {:int "2"} {:int "3"}]}]}

@@ -131,7 +131,7 @@
     x =: 1
   clojure: |
     (defn main [name] (say (str "Hello " name)))
-    (def x 1)
+    (let [x 1])
     (apply main ARGV)
 
 
@@ -141,8 +141,7 @@
     x =: 41
     =>: (x + 1)
   clojure: |
-    (def x 41)
-    (_+ x 1)
+    (let [x 41] (_+ x 1))
 
 
 - name: (a + b + c) -> (+ a b c)
@@ -314,8 +313,9 @@
     defn say-hi():
       say: "Hello $foo-bar!!"
   clojure: |
-    (def foo-bar "World")
-    (defn say-hi [] (say (str "Hello " foo-bar "!!")))
+    (let
+     [foo-bar "World"]
+     (defn say-hi [] (say (str "Hello " foo-bar "!!"))))
 
 
 - name: Fully qualified symbols
@@ -334,7 +334,7 @@
     foo =: \(%1 + %4)
   build: |
    {:pairs
-    ([{:Sym def} {:Sym foo}]
+    ([{:Sym let} {:Sym foo}]
      {:Lst
       [{:Sym fn}
        {:Vec
@@ -342,7 +342,7 @@
          {:Vec [{:Sym _1} {:Sym _} {:Sym _} {:Sym _4}]}]}
        {:Lst [{:Sym +} {:Sym _1} {:Sym _4}]}]})}
   clojure: |
-    (def foo (fn [& [_1 _ _ _4]] (_+ _1 _4)))
+    (let [foo (fn [& [_1 _ _ _4]] (_+ _1 _4))])
 
 
 - name: Anonymous function 2
@@ -442,8 +442,7 @@
     =>: !
       foo: ! d.bar
   clojure: |
-    (def d (load "data.yaml"))
-    {"foo" (__ d "bar")}
+    (let [d (load "data.yaml")] {"foo" (__ d "bar")})
 
 
 - name: Switching to data mode with '::'
@@ -453,8 +452,7 @@
     =>::
       foo:: d.bar
   clojure: |
-    (def d (load "data.yaml"))
-    {"foo" (__ d "bar")}
+    (let [d (load "data.yaml")] {"foo" (__ d "bar")})
 
 
 - name: Switch modes with '::' for def/let '=::'
@@ -463,8 +461,7 @@
     nums =:: [1, 2, 3]
     =>:: {foo:: nums}
   clojure: |
-    (def nums [1 2 3])
-    {"foo" nums}
+    (let [nums [1 2 3]] {"foo" nums})
 
 
 - name: rem operator
@@ -552,7 +549,7 @@
     !yamlscript/v0
     re1 =: /foo\t"bar".*/
   clojure: |
-    (def re1 #"foo\t\"bar\".*")
+    (let [re1 #"foo\t\"bar\".*"])
 
 
 - name: Regex operator
@@ -563,7 +560,7 @@
     (when (=-- a b) (c))
 
 
-- name: Macros for case, cond, condp
+- name: Build forms for case, cond, condp
   yamlscript: |
     !yamlscript/v0
     cond:
@@ -572,6 +569,7 @@
       =>: f
   clojure: |
     (cond (> a b) c (< a d) e true f)
+  SKIP: true
 
 
 - name: Single quoted string

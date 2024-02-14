@@ -1,4 +1,10 @@
-BUILD_BIN := /tmp/yamlscript/bin
+YS_TMP ?= /tmp/yamlscript
+
+ifeq (,$(wildcard $(YS_TMP)))
+  $(shell mkdir -p $(YS_TMP))
+endif
+
+BUILD_BIN := $(YS_TMP)/bin
 
 COMMON := $(ROOT)/common
 
@@ -60,6 +66,7 @@ LIBYAMLSCRIPT_SO_APIP := $(LIBYAMLSCRIPT_SO_BASE).$(API_VERSION)
 
 PREFIX ?= /usr/local
 
+
 #------------------------------------------------------------------------------
 # Set machine specific variables:
 #------------------------------------------------------------------------------
@@ -93,6 +100,7 @@ else
   $(error Unsupported OSTYPE: $(ostype))
 endif
 
+
 #------------------------------------------------------------------------------
 # Set GRAALVM variables:
 #------------------------------------------------------------------------------
@@ -103,7 +111,7 @@ GRAALVM_SRC := https://download.oracle.com/graalvm
 GRAALVM_VER ?= 21
 GRAALVM_TAR := graalvm-jdk-$(GRAALVM_VER)_$(GRAALVM_ARCH)_bin.tar.gz
 GRAALVM_URL := $(GRAALVM_SRC)/$(GRAALVM_VER)/latest/$(GRAALVM_TAR)
-GRAALVM_PATH ?= /tmp/graalvm-oracle-$(GRAALVM_VER)
+GRAALVM_PATH ?= $(YS_TMP)/graalvm-oracle-$(GRAALVM_VER)
 
 ### For GraalVM CE (Community Edition) ########################################
 else
@@ -117,11 +125,11 @@ GRAALVM_VER ?= 21
   endif
 GRAALVM_TAR := graalvm-community-$(GRAALVM_VER)_$(GRAALVM_ARCH)_bin.tar.gz
 GRAALVM_URL := $(GRAALVM_SRC)/$(GRAALVM_VER)/$(GRAALVM_TAR)
-GRAALVM_PATH ?= /tmp/graalvm-ce-$(GRAALVM_VER)
+GRAALVM_PATH ?= $(YS_TMP)/graalvm-ce-$(GRAALVM_VER)
 endif
 
 GRAALVM_HOME := $(GRAALVM_PATH)$(GRAALVM_SUBDIR)
-GRAALVM_DOWNLOAD := /tmp/$(GRAALVM_TAR)
+GRAALVM_DOWNLOAD := $(YS_TMP)/$(GRAALVM_TAR)
 GRAALVM_INSTALLED := $(GRAALVM_HOME)/release
 
 GRAALVM_O ?= 1
@@ -129,6 +137,32 @@ ifdef qbm
   GRAALVM_O := b
 endif
 
+
+#------------------------------------------------------------------------------
+# Set MAVEN variables:
+#------------------------------------------------------------------------------
+
+MAVEN_VER := 3.9.6
+MAVEN_SRC := https://dlcdn.apache.org/maven/maven-3/$(MAVEN_VER)/binaries
+MAVEN_TAR := apache-maven-$(MAVEN_VER)-bin.tar.gz
+MAVEN_URL := $(MAVEN_SRC)/$(MAVEN_TAR)
+
+MAVEN_HOME := $(YS_TMP)/apache-maven-$(MAVEN_VER)
+MAVEN_DOWNLOAD := $(YS_TMP)/$(MAVEN_TAR)
+MAVEN_INSTALLED := $(MAVEN_HOME)/bin/mvn
+
+export M2_HOME := $(YS_TMP)/maven
+MAVEN_REPOSITORY := $(M2_HOME)/repository
+MAVEN_SETTINGS := $(M2_HOME)/conf/settings.xml
+export MAVEN_OPTS := -Dmaven.repo.local=$(MAVEN_REPOSITORY)
+export PATH := $(MAVEN_HOME)/bin:$(PATH)
+
+export LEIN_JVM_OPTS := \
+  -XX:+TieredCompilation \
+  -XX:TieredStopAtLevel=1 \
+  $(MAVEN_OPTS)
+
+JAVA_INSTALLED := $(GRAALVM_INSTALLED) $(MAVEN_INSTALLED) $(MAVEN_SETTINGS)
 
 #------------------------------------------------------------------------------
 # Set release asset variables:

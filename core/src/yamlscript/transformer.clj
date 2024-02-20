@@ -6,10 +6,12 @@
 
 (ns yamlscript.transformer
   (:require
-   [yamlscript.util :refer [if-lets]]
    [yamlscript.ast :refer [Sym]]
    [yamlscript.transformers]
-   [yamlscript.debug :refer [www]]))
+   [yamlscript.util
+    :refer [cond-lets
+            www]]
+   ))
 
 (declare transform-node)
 
@@ -38,13 +40,16 @@
 (def transformers-ns (the-ns 'yamlscript.transformers))
 
 (defn apply-transformer [key val]
-  (if-lets [name (or
-                   (get-in key [:Sym])
-                   (get-in key [0 :Sym]))
-            sym (symbol (str "transform_" name))
-            transformer (ns-resolve transformers-ns sym)]
+  (cond-lets
+    [name (or
+            (get-in key [:Sym])
+            (get-in key [0 :Sym]))
+     sym (symbol (str "transform_" name))
+     transformer (ns-resolve transformers-ns sym)]
     (or (transformer key val) [key val])
-    [key val]))
+    [_ (:str key)]
+
+    [] [key val]))
 
 (defn transform-pairs [node key]
   (->> node

@@ -714,3 +714,16 @@
     {:Top [{:Vec [{:Lst [{:Sym a} {:Sym b} {:Sym c}]}]}]}
   clojure: |
     [(a b c)]
+
+
+- name: String key constructs (str ...)
+  yamlscript: |
+    !yamlscript/v0
+    list:
+      "a b":
+      "c d": inc(2)
+      "e f": "g h"
+      "": 2 + 2
+  clojure: |
+    (list "a b" (str "c d" (inc 2)) "e fg h" (str (_+ 2 2)))
+  ONLY: true

@@ -21,6 +21,16 @@
      path
      (.getAbsolutePath (io/file (abspath base) path)))))
 
+(defmacro cond-lets
+  {:style/indent [0]}
+  [& clauses]
+  (when clauses
+    `(if-lets ~(first clauses)
+       ~(if (next clauses)
+          (second clauses)
+          (die "Odd number of forms"))
+       (cond-lets ~@(nnext clauses)))))
+
 (defn die
   ([msg] (throw (Exception. ^String msg)))
   ([msg info] (throw (ex-info msg info))))
@@ -32,17 +42,6 @@
     io/file
     .getParent
     (or ".")))
-
-(defmacro cond-lets
-  "if-lets but works like cond"
-  {:style/indent [0]}
-  [& clauses]
-  (when clauses
-    `(if-lets ~(first clauses)
-       ~(if (next clauses)
-          (second clauses)
-          (die "Odd number of forms"))
-       (cond-lets ~@(nnext clauses)))))
 
 (defn get-yspath [base]
   (let [yspath (or
@@ -72,6 +71,8 @@
      `(when-let [~(first bindings) ~(second bindings)]
         (when-lets ~(drop 2 bindings) ~@body))
      `(do ~@body))))
+
+(defn www [& o] (apply debug/www o))
 
 (comment
   www)

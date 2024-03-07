@@ -5,6 +5,8 @@
 /issue-*
 /lib/
 /libyamlscript-*
+note/
+/talk/
 /www
 /ys-*
 
@@ -19,7 +21,6 @@ NO-NAME
 *.jar
 .lein-*
 .lsp/
-note/
 .nrepl-port
 .nrepl-pid
 pom.xml
@@ -30,4 +31,5 @@ profiles.clj
 .project.clj
 reports/
 target/
+.vimrc
 .vscode/
